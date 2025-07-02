@@ -1,4 +1,5 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import store from './store/store'
 
 import HomeScreen from "./pages/HomeScreen";
 import LockScreen from "./pages/LockScreen";
@@ -13,5 +14,5 @@ export default function App() {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return  <RouterProvider router={router} />;
 }

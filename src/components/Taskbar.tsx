@@ -1,8 +1,10 @@
+import { useDispatch } from "react-redux"
+import { toggleSettings } from "../store/feature"
+
 export default function Taskbar(){
 
   const t = new Date()
-  console.log(t.getTime)
-
+  const dispatch = useDispatch()
   return (
     <>
       <div className="w-full h-12 px-2 border bg-blue-950 flex justify-between items-center">
@@ -20,7 +22,8 @@ export default function Taskbar(){
             <img src="/searchIcon.png" className="w-8 h-8 object-contain" alt="" />
             <img src="/fileExplorerIcon.svg" className="w-8 h-8 object-contain" alt="" />
             <img src="/MicrosoftStoreLight.png" className="w-8 h-8 object-contain" alt="" />
-            <img src="/Settings.png" className="w-8 h-8 object-contain" alt="" />
+            <img onClick={() => dispatch(toggleSettings())} src="/Settings.png" className="w-8 h-8 object-contain" alt="" />
+            <img src="/spotifyLogo.png" className="w-8 h-8 object-contain" alt="" />
           </div>
           {/* date and battery */}
           <div className="flex gap-4 justify-center items-center">
