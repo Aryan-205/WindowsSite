@@ -1,38 +1,34 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
 
-import Settings from './Settings';
-import Spotify from './Spotify';
-import Store from './Store';
-import WindowsTab from './WindowsTab';
-import FileExplorer from './FileExplorer';
-import Search from './Search';
+import Settings from "./Settings/Settings";
+import Spotify from "./Spotify";
+import Store from "./Store";
+import WindowsTab from "./WindowsTab";
+import FileExplorer from "./FileExplorer";
+import Search from "./Search";
 
 const ActiveComponentRenderer: React.FC = () => {
   const activeComponent = useSelector((state) => state.feature.activeComponent);
 
   const renderComponent = () => {
     switch (activeComponent) {
-      case 'WindowsTab':
+      case "WindowsTab":
         return <WindowsTab />;
-      case 'Search':
+      case "Search":
         return <Search />;
-      case 'FileExplorer':
+      case "FileExplorer":
         return <FileExplorer />;
-      case 'Store':
+      case "Store":
         return <Store />;
-      case 'Settings':
+      case "Settings":
         return <Settings />;
-      case 'Spotify':
+      case "Spotify":
         return <Spotify />;
     }
   };
 
-  return (
-    <div>
-      {renderComponent()}
-    </div>
-  );
+  return <>{renderComponent()}</>;
 };
 
 export default ActiveComponentRenderer;

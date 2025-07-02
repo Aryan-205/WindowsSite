@@ -1,22 +1,20 @@
 import { motion } from "motion/react";
-import { useSelector } from "react-redux"
 import Taskbar from "../components/Taskbar";
-import Settings from "../components/Settings";
 import ActiveComponentRenderer from "../components/RenderTab";
 
 export default function HomeScreen() {
   const t = new Date()
 
-  const showSettings = useSelector((state) => state.feature.render)
   return (
     <>
-      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:1}} className="w-full min-h-screen flex-col justify-between hidden sm:flex">
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:1}} className="w-full h-screen flex-col justify-between hidden sm:flex">
         {/* main screen */}
-        <div className="flex-1 relative" >
+        <div className="flex-1 flex justify-center items-center relative h-full" >
           <p className="text-white text-8xl text-center font-semibold absolute top-12 left-[40%]">{t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</p>
           <img src="/wallpaper.webp" className="absolute w-full h-full -z-10" alt="" />
-          <ActiveComponentRenderer/>
-          {showSettings && <Settings/>}
+          <div className="w-full h-full flex justify-center items-center">
+            <ActiveComponentRenderer/>
+          </div>
         </div>
         {/* taskbar */}
         <Taskbar/>
