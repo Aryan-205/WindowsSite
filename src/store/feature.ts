@@ -1,19 +1,26 @@
-// store/featureSlice.ts or .js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  render: false
+interface AppState {
+  activeComponent: string | null; 
+}
+
+const initialState: AppState = {
+  activeComponent: null, 
 };
 
-const featureSlice = createSlice({
-  name: 'features',
+export const featureSlice = createSlice({
+  name: 'features', 
   initialState,
   reducers: {
-    toggleSettings: (state) => {
-      state.render = !state.render;
-    }
-  }
+    setActiveComponent: (state, action) => {
+      state.activeComponent = action.payload;
+    },
+    clearActiveComponent: (state) => {
+      state.activeComponent = null;
+    },
+  },
 });
 
-export const { toggleSettings } = featureSlice.actions;
+export const { setActiveComponent, clearActiveComponent } = featureSlice.actions;
+
 export default featureSlice.reducer;

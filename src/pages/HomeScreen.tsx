@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useSelector } from "react-redux"
 import Taskbar from "../components/Taskbar";
 import Settings from "../components/Settings";
+import ActiveComponentRenderer from "../components/RenderTab";
 
 export default function HomeScreen() {
   const t = new Date()
@@ -14,6 +15,7 @@ export default function HomeScreen() {
         <div className="flex-1 relative" >
           <p className="text-white text-8xl text-center font-semibold absolute top-12 left-[40%]">{t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</p>
           <img src="/wallpaper.webp" className="absolute w-full h-full -z-10" alt="" />
+          <ActiveComponentRenderer/>
           {showSettings && <Settings/>}
         </div>
         {/* taskbar */}
