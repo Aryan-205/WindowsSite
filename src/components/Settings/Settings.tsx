@@ -1,12 +1,11 @@
+import useStore from "../../store/feature";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { clearActiveComponent } from "../../store/feature";
 import settingLogo from "./settingLogo";
 import ToggleSwitch from "../Ui/ToggleSwitch";
 
 export default function Settings() {
+  const clearActiveComponent = useStore((state)=>state.clearActiveComponent)
   const [fullScreen, setFullScreen] = useState(false);
-  const dispatch = useDispatch();
 
   const [brightness, setBrightness] = useState(75);
   const [nightLight, setNightLight] = useState(false);
@@ -28,7 +27,7 @@ export default function Settings() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => dispatch(clearActiveComponent())}
+            onClick={clearActiveComponent}
             className="w-4 h-4"
           >
             <img src="/minus.png" alt="" />
@@ -40,7 +39,7 @@ export default function Settings() {
             <img src="/square.png" alt="" />
           </button>
           <button
-            onClick={() => dispatch(clearActiveComponent())}
+            onClick={clearActiveComponent}
             className="w-4 h-4"
           >
             <img src="/close.png" alt="" />

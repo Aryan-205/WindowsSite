@@ -1,26 +1,21 @@
-import { useDispatch } from "react-redux"
-import { setActiveComponent } from "../store/feature"
-
+import useStore from "../store/feature"
 
 interface LogoButtonProps{
   img:string,
   comp:string
 }
 
-const TabButton:React.FC<LogoButtonProps> =({img,comp})=>{
-
-  const dispatch = useDispatch();
+const TabButton:React.FC<LogoButtonProps> = ({img, comp}) => {
+  const setActiveComponent = useStore((state) => state.setActiveComponent); 
 
   const handleClick = () => {
-    dispatch(setActiveComponent(comp));
+    setActiveComponent(comp);
   };
 
   return (
-    <>
-      <button onClick={handleClick}>
-        <img src={img} className="w-8 h-8 object-contain" alt="" />
-      </button>
-    </>
-  )
-}
+    <button onClick={handleClick}>
+      <img src={img} className="w-8 h-8 object-contain" alt="" />
+    </button>
+  );
+};
 export default TabButton

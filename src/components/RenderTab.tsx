@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
 import Settings from "./Settings/Settings";
 import Spotify from "./Spotify";
@@ -7,9 +6,11 @@ import Store from "./Store";
 import WindowsTab from "./WindowsTab";
 import FileExplorer from "./FileExplorer";
 import Search from "./Search";
+import useStore from "../store/feature";
 
 const ActiveComponentRenderer: React.FC = () => {
-  const activeComponent = useSelector((state) => state.feature.activeComponent);
+  const activeComponent = useStore((state)=>state.activeComponent
+)
 
   const renderComponent = () => {
     switch (activeComponent) {
