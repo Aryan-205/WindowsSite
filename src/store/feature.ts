@@ -1,8 +1,15 @@
 import {create} from 'zustand'
 
-const useStore = create((set)=>({
-  activeComponent:'',
-  setActiveComponent:(comp:string)=>set({activeComponent:comp}),
-  clearActiveComponent:()=>set({activeComponent:''})
-}))
+interface StoreState {
+  activeComponent: string | null;
+  setActiveComponent: (component: string) => void;
+  clearActiveComponent: () => void;
+}
+
+const useStore = create<StoreState>((set) => ({
+  activeComponent: null,
+  setActiveComponent: (comp) => set({ activeComponent: comp }),
+  clearActiveComponent: () => set({ activeComponent: null }),
+}));
+
 export default useStore
