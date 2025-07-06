@@ -12,7 +12,7 @@ export default function HomeScreen() {
         <div className="flex-1 flex justify-center items-center relative h-full" >
           <p className="text-white text-8xl text-center font-semibold absolute top-12 left-[40%]">{t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</p>
           <img src="/wallpaper.webp" className="absolute w-full h-full -z-10" alt="" />
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full h-full relative flex justify-center items-center">
             <ActiveComponentRenderer/>
           </div>
         </div>
