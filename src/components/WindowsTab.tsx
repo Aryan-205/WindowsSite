@@ -1,25 +1,28 @@
 import { useState } from 'react';
+import useStore from '../store/feature';
 
 export default function WindowsTab() {
   const [activeTab, setActiveTab] = useState('Pinned'); 
 
+  const clearActiveComponent = useStore((state)=>state.clearActiveComponent)
+
   const pinnedApps = [
-    { name: 'Edge', icon: 'bg-blue-500' },
-    { name: 'Word', icon: 'bg-blue-600' },
-    { name: 'Excel', icon: 'bg-green-600' },
-    { name: 'PowerPoint', icon: 'bg-red-600' },
-    { name: 'Microsoft 365', icon: 'bg-purple-600' },
-    { name: 'Outlook (new)', icon: 'bg-blue-700' },
-    { name: 'Microsoft Store', icon: 'bg-blue-800' },
-    { name: 'Photos', icon: 'bg-gray-400' },
-    { name: 'OneNote', icon: 'bg-purple-500' },
-    { name: 'Microsoft Defender', icon: 'bg-green-700' },
-    { name: 'Paint', icon: 'bg-yellow-500' },
-    { name: 'Surface', icon: 'bg-teal-500' },
-    { name: 'Settings', icon: 'bg-gray-600' },
-    { name: 'Xbox', icon: 'bg-green-800' },
-    { name: 'Spotify', icon: 'bg-green-500' },
-    { name: 'Clock', icon: 'bg-blue-400' },
+    { name: 'Edge', icon: '/microsoftEdge.png' },
+    { name: 'Word', icon: '/msword.png' },
+    { name: 'Excel', icon: '/msexcel.png' },
+    { name: 'PowerPoint', icon: '/mspp.png' },
+    { name: 'Microsoft 365', icon: '/ms365.png' },
+    { name: 'Outlook (new)', icon: '/outlook.png' },
+    { name: 'Microsoft Store', icon: '/msstore.png' },
+    { name: 'Photos', icon: '/photos.png' },
+    { name: 'OneNote', icon: '/note.png' },
+    { name: 'Microsoft Defender', icon: '/msdefender.png' },
+    { name: 'Paint', icon: '/msdefender.png' },
+    { name: 'Notepad', icon: '/notepad.png' },
+    { name: 'Settings', icon: '/Settings.png' },
+    { name: 'Xbox', icon: '/Xbox.png' },
+    { name: 'Spotify', icon: '/spotifyLogo.png' },
+    { name: 'Clock', icon: '/clock.png' },
   ];
 
   const allApps = [
@@ -62,7 +65,7 @@ export default function WindowsTab() {
   ];
 
   return (
-
+    <>
     <div className="absolute bottom-0 left-[28%] bg-gray-800 bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-2xl shadow-2xl p-6 w-full max-w-2xl border border-gray-700 flex flex-col max-h-[calc(100vh-80px)] overflow-y-auto scrollbar-hide">
 
       {/* Search Bar */}
@@ -117,9 +120,9 @@ export default function WindowsTab() {
             {pinnedApps.map((app, index) => (
               <div key={index} className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
                 {/* Placeholder for App Icon */}
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl ${app.icon}`}>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl `}>
                   {/* You will replace this with your actual image */}
-                  <span className="opacity-0">{app.name.charAt(0)}</span> {/* Hidden for accessibility */}
+                  <img className='w-8 h-8' src={app.icon} alt="" /> {/* Hidden for accessibility */}
                 </div>
                 <span className="mt-2 text-xs text-gray-300 text-center">{app.name}</span>
               </div>
@@ -185,5 +188,7 @@ export default function WindowsTab() {
         </div>
       </div>
     </div>
+    <div className='w-full h-full' onClick={clearActiveComponent}/>
+    </>
   );
 }

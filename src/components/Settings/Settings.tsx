@@ -40,7 +40,7 @@ export default function Settings() {
           </button>
           <button
             onClick={clearActiveComponent}
-            className="w-4 h-4"
+            className="w-4 h-4 hover:bg-red-500"
           >
             <img src="/close.png" alt="" />
           </button>
