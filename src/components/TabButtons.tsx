@@ -2,10 +2,11 @@ import useStore from "../store/feature"
 
 interface LogoButtonProps{
   img:string,
-  comp:string
+  comp:string,
+  width:string
 }
 
-const TabButton:React.FC<LogoButtonProps> = ({img, comp}) => {
+const TabButton:React.FC<LogoButtonProps> = ({img, comp, width}) => {
   const setActiveComponent = useStore((state) => state.setActiveComponent); 
 
   const handleClick = () => {
@@ -14,7 +15,7 @@ const TabButton:React.FC<LogoButtonProps> = ({img, comp}) => {
 
   return (
     <button onClick={handleClick}>
-      <img src={img} className="w-8 h-8 object-contain" alt="" />
+      <img src={img} className={`${width} object-contain`} alt="" />
     </button>
   );
 };

@@ -1,4 +1,3 @@
-import logo from '../pages/logo'
 import TabButton from "./TabButtons"
 
 export default function Taskbar(){
@@ -17,17 +16,18 @@ export default function Taskbar(){
           </div>
           {/* icons */}
           <div className="flex gap-4">
-            {
-              logo.map((i,index)=>(
-                <TabButton key={index} img={i.img} comp={i.comp}/>
-              ))
-            }
+            <TabButton img='/windows11logo.png' comp='WindowsTab' width="w-8"/>
+            <TabButton img='/searchIcon.png' comp='Search' width="w-8"/>
+            <TabButton img='/fileExplorerIcon.svg' comp='FileExplorer' width="w-8"/>
+            <TabButton img='/MicrosoftStoreLight.png' comp='Store' width="w-8"/>
+            <TabButton img='/Settings.png' comp='Settings' width="w-8"/>
+            <TabButton img='/spotifyLogo.png' comp='Spotify' width="w-8"/>
           </div>
           {/* date and battery */}
           <div className="flex gap-4 justify-center items-center">
-            <img src="/wifiIcon.png" className="w-4 h-4 object-contain" alt="" />
-            <img src="/loud-speakerIcon.png" className="w-4 h-4 object-contain" alt="" />
-            <img src="/batteryIcon.png" className="w-4 h-4 object-contain" alt="" />
+            <TabButton img='/wifiIcon.png' comp='Wifi' width="w-4"/>
+            <TabButton img='/loud-speakerIcon.png' comp='Volume' width="w-4"/>
+            <TabButton img='/batteryIcon.png' comp='Battery' width="w-4"/>
             <div className="flex flex-col items-end text-sm font-light text-white">
               <p>{t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
               <p>{t.toLocaleDateString()}</p>
