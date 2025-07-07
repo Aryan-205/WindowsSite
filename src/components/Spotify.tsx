@@ -5,6 +5,7 @@ import { MusicBox } from "./MusicBox";
 export default function Spotify() {
   const clearActiveComponent = useStore((state) => state.clearActiveComponent);
   const [fullScreen, setFullScreen] = useState(false);
+  const [play, setPlay] = useState(false);
 
   const currentSong = useStore((state)=>state.currentSong)
 
@@ -79,7 +80,7 @@ export default function Spotify() {
         <div className="flex-1 flex ">
           {/* Sidebar */}
           <div className="w-[10%] flex flex-col justify-start items-center p-4 bg-gray-900 border-r border-gray-700">
-            <img src="/spotify_logo.png" alt="Spotify Logo" className="w-10 h-10 mb-8" />
+            <img src="/spotifyLogo.png" alt="Spotify Logo" className="w-10 h-10 mb-8" />
             <button className="flex items-center gap-3 text-gray-300 hover:text-white mb-4">
               <img src="/home_icon.png" alt="Home" className="w-5 h-5" />
             </button>
@@ -95,7 +96,7 @@ export default function Spotify() {
             {/* Search Bar Area */}
             <div className="h-[15%] flex items-center justify-center p-4 bg-gradient-to-b from-gray-900 to-black">
               <div className="flex items-center bg-gray-700 rounded-full px-4 py-2 w-[80%]">
-                <img src="/search_icon_white.png" alt="Search" className="w-4 h-4 mr-2" />
+                <img src="/searchIcon.png" alt="Search" className="w-4 h-4 mr-2" />
                 <input
                   type="text"
                   placeholder="Search songs or artists..."
@@ -117,7 +118,7 @@ export default function Spotify() {
         </div>
         {/* Player Bar */}
         <div className="h-[12%] flex justify-between items-center bg-gray-800 px-4 py-2 border-t border-gray-700 shrink-0">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center w-44 ">
             {currentSong?.coverImage && (
               <img
                 src={currentSong?.coverImage}
@@ -130,22 +131,22 @@ export default function Spotify() {
               <p className="text-gray-400 text-sm">{currentSong?.artist}</p>
             </div>
           </div>
-          <div className="flex flex-col items-center flex-grow mx-8">
+          <div className="flex flex-col items-center">
             <div className="flex items-center gap-6 mb-2">
               <button>
-                <img src="/shuffle_icon.png" alt="Shuffle" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src="/shuffleButton.png" alt="Shuffle" className="w-5 h-5 opacity-70 hover:opacity-100" />
               </button>
               <button>
-                <img src="/previous_icon.png" alt="Previous" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src="/nextButton.png" alt="Previous" className="w-5 h-5 rotate-180 opacity-70 hover:opacity-100" />
               </button>
               <button>
-                <img src="/play_icon.png" alt="Play" className="w-8 h-8" /> {/* Play button is larger and green in screenshot */}
+                <img src={play ? "/playButton.png" : '/pauseButton.png'} alt="Play" className="w-8 h-8 bg-green-500 rounded-full flex justify-center items-center p-1" /> 
               </button>
               <button>
-                <img src="/next_icon.png" alt="Next" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src="/nextButton.png" alt="Next" className="w-5 h-5 opacity-70 hover:opacity-100" />
               </button>
               <button>
-                <img src="/repeat_icon.png" alt="Repeat" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src="/repeatButton.png" alt="Repeat" className="w-5 h-5 opacity-70 hover:opacity-100" />
               </button>
             </div>
             <div className="flex items-center w-full max-w-xl">
@@ -153,7 +154,7 @@ export default function Spotify() {
               <div className="flex-grow h-1 bg-gray-600 rounded-full relative">
                 <div
                   className="absolute left-0 top-0 h-full bg-green-500 rounded-full"
-                  style={{ width: "calc((19 / 245) * 100%)" }} // 19 seconds into 4:05 (245 seconds)
+                  style={{ width: "calc((19 / 245) * 100%)" }} 
                 ></div>
                 <div className="absolute left-[calc((19/245)*100%)] top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"></div>
               </div>
@@ -161,21 +162,11 @@ export default function Spotify() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button>
-              <img src="/lyrics_icon.png" alt="Lyrics" className="w-4 h-4 opacity-70 hover:opacity-100" />
-            </button>
-            <button>
-              <img src="/queue_icon.png" alt="Queue" className="w-4 h-4 opacity-70 hover:opacity-100" />
-            </button>
-            <button>
-              <img src="/device_icon.png" alt="Connect to device" className="w-4 h-4 opacity-70 hover:opacity-100" />
-            </button>
-            <img src="/volume_icon.png" alt="Volume" className="w-4 h-4" />
             <input
               type="range"
               min="0"
               max="100"
-              className="w-24 h-1 bg-gray-600 rounded-full appearance-none volume-slider"
+              className="w-24 h-1 bg-gray-600 rounded-full volume-slider"
             />
           </div>
         </div>

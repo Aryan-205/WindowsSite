@@ -4,6 +4,7 @@ interface Song {
   id: string;
   title: string;
   artist: string;
+  duration:string;
   url: string;
   coverImage?: string;
 }
