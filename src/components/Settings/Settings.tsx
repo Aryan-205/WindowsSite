@@ -2,6 +2,7 @@ import useStore from "../../store/feature";
 import { useState } from "react";
 import settingLogo from "./settingLogo";
 import ToggleSwitch from "../Ui/ToggleSwitch";
+import {motion, useDragControls} from 'motion/react'
 
 export default function Settings() {
   const clearActiveComponent = useStore((state)=>state.clearActiveComponent)
@@ -11,14 +12,19 @@ export default function Settings() {
   const [nightLight, setNightLight] = useState(false);
   const [useHDR, setUseHDR] = useState(false);
 
+  const controls = useDragControls()
+
   return (
-    <div
+    <motion.div
+      drag
+      dragControls={controls}
+      dragListener={false}
       className={`z-10 ${
         fullScreen ? "w-full h-full" : "w-[60%] h-[70%]"
       } ${nightLight ? 'bg-black text-white' : 'bg-white'} flex flex-col rounded-lg overflow-hidden shadow-xl`}
     >
       {/* Title Bar */}
-      <div className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-200 bg-gray-50">
+      <div onPointerDown={event => controls.start(event)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-3">
           <button className="w-4 h-4 flex items-center justify-center text-gray-600">
             <img src="/leftArrow.png" alt="" />
@@ -368,6 +374,6 @@ export default function Settings() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
