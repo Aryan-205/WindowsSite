@@ -19,6 +19,8 @@ export default function Settings() {
       drag
       dragControls={controls}
       dragListener={false}
+      dragMomentum={false}
+      dragElastic={0}
       className={`z-10 ${
         fullScreen ? "w-full h-full" : "w-[60%] h-[70%]"
       } ${nightLight ? 'bg-black text-white' : 'bg-white'} flex flex-col rounded-lg overflow-hidden shadow-xl`}
