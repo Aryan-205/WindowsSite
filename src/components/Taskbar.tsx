@@ -16,10 +16,10 @@ export default function Taskbar(){
           </div>
           {/* icons */}
           <div className="flex gap-4">
-            <TabButton img='/windows11logo.png' comp='WindowsTab' width="w-8"/>
+            <TabButton img='/windows11logo.png' comp='WindowsTab' width="w-10"/>
             <TabButton img='/searchIcon.png' comp='Search' width="w-8"/>
             <TabButton img='/fileExplorerIcon.svg' comp='FileExplorer' width="w-8"/>
-            <TabButton img='/MicrosoftStoreLight.png' comp='Store' width="w-8"/>
+            <TabButton img='/chrome.png' comp='Chrome' width="w-10"/>
             <TabButton img='/Settings.png' comp='Settings' width="w-8"/>
             <TabButton img='/spotifyLogo.png' comp='Spotify' width="w-8"/>
           </div>

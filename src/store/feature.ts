@@ -5,8 +5,8 @@ interface Song {
   title: string;
   artist: string;
   duration:string;
-  url: string;
-  coverImage?: string;
+  song: string;
+  albumArt?: string;
 }
 
 interface StoreState {
