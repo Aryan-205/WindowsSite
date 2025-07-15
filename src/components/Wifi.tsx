@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import useStore from "../store/feature";
 
-// Helper component for a toggle switch (can be replaced with a library if preferred)
-const ToggleSwitch = ({ isOn, handleToggle, label }) => {
+interface iToggleSwitch  {
+  isOn: boolean;
+  handleToggle: () => void;
+  label: string;
+}
+
+const ToggleSwitch = ({ isOn, handleToggle, label }: iToggleSwitch) => {
   return (
     <div className="flex items-center justify-between p-2">
       <span className="text-sm text-white">{label}</span>
@@ -22,10 +27,13 @@ const ToggleSwitch = ({ isOn, handleToggle, label }) => {
   );
 };
 
-// Helper component for network signal strength icon
-const SignalStrengthIcon = ({ strength }) => {
-  // Strength from 0 to 4 (simulated bars)
-  const getBars = (s) => {
+interface iSignalStrengthIcon {
+  strength: number;
+}
+
+const SignalStrengthIcon = ({ strength }: iSignalStrengthIcon) => {
+
+  const getBars = (s: number) => {
     if (s >= 80) return 4;
     if (s >= 60) return 3;
     if (s >= 40) return 2;
@@ -54,20 +62,27 @@ const SignalStrengthIcon = ({ strength }) => {
   );
 };
 
+interface iNetwork {
+  ssid: string;
+  strength: number;
+  security: string;
+  isHidden: boolean;
+  isConnected?: boolean;
+}
+
 export default function Wifi() {
 
-  const clearActiveComponent = useStore((state)=>state.clearActiveComponent)
+  const clearActiveComponent = useStore((state: any) => state.clearActiveComponent); // Added type for state
 
-  const [wifiEnabled, setWifiEnabled] = useState(true);
-  const [availableNetworks, setAvailableNetworks] = useState([]);
-  const [connectedNetwork, setConnectedNetwork] = useState(null); // SSID of connected network
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [password, setPassword] = useState("");
-  const [selectedNetworkToConnect, setSelectedNetworkToConnect] = useState(null);
+  const [wifiEnabled, setWifiEnabled] = useState<boolean>(true);
+  const [availableNetworks, setAvailableNetworks] = useState<iNetwork[]>([]);
+  const [connectedNetwork, setConnectedNetwork] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [selectedNetworkToConnect, setSelectedNetworkToConnect] = useState<iNetwork | null>(null);
 
-  // Simulate available networks
-  const simulateNetworks = () => {
+  const simulateNetworks = (): iNetwork[] => { 
     return [
       { ssid: "Home_Fiber_5G", strength: 90, security: "WPA2", isHidden: false },
       { ssid: "Guest_Network", strength: 65, security: "Open", isHidden: false },
@@ -75,7 +90,7 @@ export default function Wifi() {
       { ssid: "Secure_Office", strength: 85, security: "WPA2-Enterprise", isHidden: false },
       { ssid: "Public_Hotspot", strength: 30, security: "Open", isHidden: false },
       { ssid: "My_Hidden_AP", strength: 70, security: "WPA2", isHidden: true },
-    ].sort((a, b) => b.strength - a.strength); // Sort by strength
+    ].sort((a, b) => b.strength - a.strength); 
   };
 
   useEffect(() => {
@@ -85,23 +100,18 @@ export default function Wifi() {
       setAvailableNetworks([]);
       setConnectedNetwork(null);
     }
-    // Simulate initial connection if it was previously connected and Wi-Fi re-enabled
-    // This is a simple example; in a real app, you'd save/load preferred networks
-    if (wifiEnabled && connectedNetwork === null && availableNetworks.length > 0) {
-        // Optionally auto-connect to a preferred network here
-    }
-  }, [wifiEnabled]);
+  }, [wifiEnabled, connectedNetwork, availableNetworks.length]); 
 
   const handleToggleWifi = () => {
     setWifiEnabled((prev) => !prev);
-    // Reset connection status if turning off Wi-Fi
+
     if (wifiEnabled) {
       setConnectedNetwork(null);
       setIsConnecting(false);
     }
   };
 
-  const handleConnect = (network) => {
+  const handleConnect = (network: iNetwork) => { 
     if (connectedNetwork === network.ssid) {
       // Already connected
       return;
@@ -121,7 +131,8 @@ export default function Wifi() {
     setTimeout(() => {
       // In a real app, you'd validate password here
       if (network.security !== "Open" && password !== "password123") { // Simple password check
-        alert("Incorrect password!");
+        // Replaced alert with a console log or a custom modal for better UX in an iframe
+        console.error("Incorrect password!");
         setIsConnecting(false);
         setShowPasswordInput(false);
         setPassword("");
@@ -135,15 +146,14 @@ export default function Wifi() {
       setPassword("");
       setSelectedNetworkToConnect(null);
 
-      // Update available networks to mark this one as connected
       setAvailableNetworks((prevNetworks) =>
         prevNetworks.map((n) =>
           n.ssid === network.ssid
             ? { ...n, isConnected: true }
-            : { ...n, isConnected: false } // Ensure only one is connected
+            : { ...n, isConnected: false }
         )
       );
-    }, 2000); // 2 second connection delay
+    }, 800); //connection delay
   };
 
   const handleDisconnect = () => {
@@ -154,15 +164,6 @@ export default function Wifi() {
     );
   };
 
-  const refreshNetworks = () => {
-    if (wifiEnabled) {
-      setIsConnecting(true); // Simulate scanning
-      setTimeout(() => {
-        setAvailableNetworks(simulateNetworks());
-        setIsConnecting(false);
-      }, 1500); // 1.5 second scan delay
-    }
-  };
 
   return (
     <>
@@ -170,26 +171,6 @@ export default function Wifi() {
       {/* Header */}
       <div className="bg-gray-700 px-4 py-3 flex justify-between items-center border-b border-gray-600">
         <h3 className="text-lg font-semibold">Wi-Fi</h3>
-        <button
-          onClick={refreshNetworks}
-          className="text-gray-400 hover:text-white transition-colors duration-200"
-          title="Refresh networks"
-          disabled={isConnecting || !wifiEnabled}
-        >
-          {/* Simple refresh icon, you can use an SVG icon */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-5 w-5 ${isConnecting ? "animate-spin" : ""}`}
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.328 3.328a.75.75 0 011.06 0L8 5.94V3.5A.75.75 0 018.75 2h2.5A.75.75 0 0112 3.5v2.44l2.612-2.612a.75.75 0 011.06 1.06L13.06 7h3.69a.75.75 0 010 1.5H13.06l3.69 3.69a.75.75 0 01-1.06 1.06L12 9.06v2.44a.75.75 0 01-.75.75H8.75a.75.75 0 01-.75-.75V9.06L4.328 12.372a.75.75 0 01-1.06-1.06L5.94 8H2.25a.75.75 0 010-1.5h3.69L2.25 3.328a.75.75 0 010-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
       </div>
 
       {/* Wi-Fi Toggle */}
@@ -214,7 +195,7 @@ export default function Wifi() {
               <div className="mb-4">
                 <p className="text-gray-400 text-sm mb-1">Connected to:</p>
                 <div className="flex items-center gap-2 text-blue-400 font-medium">
-                  <SignalStrengthIcon strength={90} /> {/* Assume strong signal for connected */}
+                  <SignalStrengthIcon strength={90} /> 
                   <span>{connectedNetwork}</span>
                 </div>
                 <button
@@ -274,9 +255,8 @@ export default function Wifi() {
                       <SignalStrengthIcon strength={network.strength} />
                       <span className="text-sm">{network.ssid}</span>
                       {network.security !== "Open" && (
-                        <span className="text-gray-400 text-xs ml-1">
-                          {/* Padlock icon - replace with an actual SVG if needed */}
-                          &#x1F512;
+                        <span className="text-gray-400 text-xs ml-1 flex items-center">
+                          <img src="/padlock.png" className="w-4 object-contain" alt="" />
                         </span>
                       )}
                     </div>

@@ -2,7 +2,7 @@ import React from "react";
 
 import Settings from "./Settings/Settings";
 import Spotify from "./Spotify";
-import Store from "./Store";
+import Chrome from "./Chrome";
 import WindowsTab from "./WindowsTab";
 import FileExplorer from "./FileExplorer";
 import Search from "./Search";
@@ -23,8 +23,8 @@ const ActiveComponentRenderer: React.FC = () => {
         return <Search />;
       case "FileExplorer":
         return <FileExplorer />;
-      case "Store":
-        return <Store />;
+      case "Chrome":
+        return <Chrome />;
       case "Settings":
         return <Settings />;
       case "Spotify":
