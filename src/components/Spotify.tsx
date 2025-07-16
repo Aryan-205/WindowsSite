@@ -1,5 +1,5 @@
 import useStore from "../store/feature";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState} from "react";
 import { motion, useDragControls } from 'motion/react'
 import MusicBox from "./MusicBox";
 
@@ -18,75 +18,22 @@ export default function Spotify() {
   const setSong = useStore((state) => state.setSong);
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false); // Manages play/pause state
+  const [isPlaying, setIsPlaying] = useState(true); 
   const [isLooping, setIsLooping] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const controls = useDragControls();
 
-  // --- useEffect for Audio Playback Control ---
-  useEffect(() => {
-    const audio = audioPlayerRef.current;
-    if (!audio) return;
-
-    // This flag helps prevent unwanted auto-plays when currentSong changes
-    // without an explicit play action from the user (e.g., clicking the song in the list)
-    let shouldPlayOnSrcChange = false;
-
-    if (currentSong && audio.src !== currentSong.song) {
-      audio.src = currentSong.song;
-      audio.load();
-      shouldPlayOnSrcChange = true; // Mark that we intend to play this new song
-    }
-
-    // Only control play/pause if isPlaying state explicitly requires it OR
-    // if a new song was just loaded and should start playing.
-    if (isPlaying || shouldPlayOnSrcChange) {
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
-            // If play fails (e.g., due to autoplay policy), set isPlaying to false
-            setIsPlaying(false);
-        });
-    } else {
-        audio.pause();
-    }
-
-    // Control mute
-    audio.muted = isMuted;
-
-    // Control loop
-    audio.loop = isLooping;
-
-    // Event listener for when the current song finishes
-    const handleSongEnded = () => {
-      setIsPlaying(false); // Set to paused when song ends
-      // You could also implement logic here to play the next song automatically
-      // playNextSong();
-    };
-
-    audio.addEventListener('ended', handleSongEnded);
-
-    // Cleanup function: remove the event listener
-    return () => {
-      audio.removeEventListener('ended', handleSongEnded);
-    };
-
-    // Dependencies: currentSong (to load new songs), isPlaying (to pause/resume),
-    // isMuted, isLooping (for player controls)
-  }, [currentSong, isPlaying, isMuted, isLooping]);
-
-  // Handler for the global play/pause button
   const togglePlayPause = () => {
-    setIsPlaying(prev => !prev);
-  };
 
-  // Handler for setting a new song (called by MusicBox)
-  // This function is crucial for triggering play when a song is selected from the list.
-  const handleSongSelect = (song: Song) => {
-    setSong(song);
-    // Explicitly set playing true when a new song is selected
-    setIsPlaying(true);
+    if(isPlaying){
+      audioPlayerRef.current?.pause()
+    } else {
+      audioPlayerRef.current?.play()
+    }
+    setIsPlaying(prev => !prev);
+
   };
 
   // Handler for mute button
@@ -116,7 +63,7 @@ export default function Spotify() {
     const currentIndex = musicLibrary.findIndex(s => s.id === currentSong.id);
     const prevIndex = (currentIndex - 1 + musicLibrary.length) % musicLibrary.length;
     setSong(musicLibrary[prevIndex]);
-    setIsPlaying(true); // Ensure it plays when switching to previous song
+    setIsPlaying(true); 
   };
 
 
@@ -139,20 +86,28 @@ export default function Spotify() {
     },
     {
       id: "3",
-      title: "Perfect",
+      title: "Finding Her",
       artist: "One Direction",
       duration: "3:49",
-      albumArt: "/perfect_album_art.jpg",
-      song:'/audio/perfect.mp3'
+      albumArt: "/findingHer.jpg",
+      song:'/findingHer.mp3'
     },
     {
       id: "4",
-      title: "Live While We're Young",
+      title: "Attention",
       artist: "One Direction",
       duration: "3:22",
-      albumArt: "/live_while_were_young_album_art.jpg",
-      song:'/audio/live_while_were_young.mp3'
+      albumArt: "/Attention.jpg",
+      song:'/Attention.mp3'
     },
+    // {
+    //   id: "5",
+    //   title: "O Rangrez",
+    //   artist: "One Direction",
+    //   duration: "3:22",
+    //   albumArt: "/ORangrez.jpg",
+    //   song:'/ORangrez.mp3'
+    // },
   ];
 
 
@@ -168,7 +123,7 @@ export default function Spotify() {
       }  bg-black text-white flex flex-col rounded-lg overflow-hidden shadow-xl`}
     >
       {/* Title Bar */}
-      <div onPointerDown={event => controls.start(event)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-700 bg-gray-900">
+      <div onPointerDown={event => controls.start(event)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-700 bg-gray-500">
         <div className="flex items-center gap-3">
           <button className="w-4 h-4 flex items-center justify-center text-gray-400">
             <img src="/leftArrow.png" alt="Back" className="w-full h-full" />
@@ -189,7 +144,7 @@ export default function Spotify() {
             onClick={clearActiveComponent}
             className="w-4 h-4 hover:bg-red-500 rounded-full flex items-center justify-center"
           >
-            <img src="/close.png" alt="Close" className="w-2 h-2" />
+            <img src="/close.png" alt="Close" className="w-full h-full" />
           </button>
         </div>
       </div>
@@ -201,13 +156,13 @@ export default function Spotify() {
           <div className="w-[10%] flex flex-col justify-start items-center p-4 bg-gray-900 border-r border-gray-700">
             <img src="/spotifyLogo.png" alt="Spotify Logo" className="w-10 h-10 mb-8" />
             <button className="flex items-center gap-3 text-gray-300 hover:text-white mb-4">
-              <img src="/home_icon.png" alt="Home" className="w-5 h-5" />
+              <img src="/homewhite.png" alt="Home" className="w-5 h-5" />
             </button>
             <button className="flex items-center gap-3 text-white mb-4">
-              <img src="/search_icon.png" alt="Search" className="w-5 h-5" />
+              <img src="/searchIcon.png" alt="Search" className="w-5 h-5" />
             </button>
             <button className="flex items-center gap-3 text-gray-300 hover:text-white mb-4">
-              <img src="/library_icon.png" alt="Your Library" className="w-5 h-5" />
+              <img src="/playlist.png" alt="Your Library" className="w-5 h-5" />
             </button>
           </div>
           {/* Main Content */}
@@ -224,13 +179,12 @@ export default function Spotify() {
               </div>
             </div>
             {/* Music List */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar overflow-hidden">
               <p className="text-white text-xl font-bold px-4 py-3">Music Library</p>
               {musicLibrary.map((s) => (
                 <MusicBox
                   key={s.id}
                   songData={s}
-                  // No need to pass mute and loop props to MusicBox anymore
                 />
               ))}
             </div>
@@ -238,6 +192,9 @@ export default function Spotify() {
         </div>
         {/* Player Bar */}
         <div className="h-[12%] flex justify-between items-center bg-gray-800 px-4 py-2 border-t border-gray-700 shrink-0">
+          {/* audio */}
+          <audio autoPlay src={currentSong?.song} muted={isMuted} loop={isLooping} ref={audioPlayerRef} className="hidden" />
+
           <div className="flex gap-4 items-center w-44 ">
             {currentSong?.albumArt && (
               <img
@@ -255,7 +212,7 @@ export default function Spotify() {
             <div className="flex items-center gap-6 mb-2">
               {/* Mute button */}
               <button onClick={toggleMute}>
-                <img src={isMuted ? "/mute.png" : "/volume_on.png"} alt="Mute" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src={isMuted ? "/mute.png" : "/loud-speakerIcon.png"} alt="Mute" className="w-5 h-5 opacity-70 hover:opacity-100" />
               </button>
               {/* Previous button */}
               <button onClick={playPreviousSong}>
@@ -271,7 +228,7 @@ export default function Spotify() {
               </button>
               {/* Loop button */}
               <button onClick={toggleLoop}>
-                <img src={isLooping ? "/repeat_active.png" : "/repeatButton.png"} alt="Repeat" className="w-5 h-5 opacity-70 hover:opacity-100" />
+                <img src={isLooping ? "/loopIcon.png" : "/notloopIcon.png"} alt="Repeat" className="w-5 h-5 opacity-70 hover:opacity-100" />
               </button>
             </div>
             <div className="flex items-center w-full max-w-xl">
@@ -287,6 +244,7 @@ export default function Spotify() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <img src="/loud-speakerIcon.png" className="w-4" alt="" />
             <input
               type="range"
               min="0"
@@ -298,7 +256,7 @@ export default function Spotify() {
         </div>
       </div>
       {/* This is the SINGLE, CENTRAL audio element for the entire application */}
-      <audio ref={audioPlayerRef} className="hidden"></audio>
+      
     </motion.div>
   );
 }
