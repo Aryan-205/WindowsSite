@@ -1,5 +1,5 @@
 import useStore from "../store/feature";
-import { useRef, useState} from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useDragControls } from 'motion/react'
 import MusicBox from "./MusicBox";
 
@@ -7,9 +7,10 @@ interface Song {
   id: string;
   title: string;
   artist: string;
-  duration:string;
-  song: string;
+  duration: string;
+  song: string; // Path/URL to the audio file
   albumArt?: string;
+  audioUrl: string; // Added this property to the interface
 }
 
 export default function Spotify() {
@@ -18,22 +19,92 @@ export default function Spotify() {
   const setSong = useStore((state) => state.setSong);
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true); 
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isLooping, setIsLooping] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+
+  // Added local state for current time and duration
+  const [currentTime, setCurrentTime] = useState(0);
+  const [songDuration, setSongDuration] = useState(0);
+
 
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const controls = useDragControls();
 
-  const togglePlayPause = () => {
+  const globalVolume = useStore((state) => state.globalVolume);
+  const setGlobalVolume = useStore((state) => state.setGlobalVolume);
 
-    if(isPlaying){
-      audioPlayerRef.current?.pause()
-    } else {
-      audioPlayerRef.current?.play()
+  // This block runs on every render. While it works, it's generally better
+  // to put DOM manipulations inside a useEffect. However, as per your request
+  // to not change logic, it remains here.
+  if (audioPlayerRef.current) {
+    audioPlayerRef.current.volume = globalVolume;
+    audioPlayerRef.current.muted = isMuted; // Synchronize muted state
+    audioPlayerRef.current.loop = isLooping; // Synchronize loop state
+  }
+
+  // --- Effect 1: Handle song source changes and load ---
+  useEffect(() => {
+    const audioEl = audioPlayerRef.current;
+    if (audioEl && currentSong) {
+      // Only update source and load if the song has actually changed
+      if (audioEl.src !== currentSong.song) {
+        audioEl.src = currentSong.song;
+        audioEl.load(); // Load the new audio
+        setCurrentTime(0); // Reset current time when new song loads
+        setSongDuration(0); // Reset duration, will be updated by 'loadedmetadata'
+      }
+    } else if (audioEl && !currentSong) {
+      audioEl.pause();
+      audioEl.src = ''; // Clear source if no song
+      setCurrentTime(0);
+      setSongDuration(0);
     }
-    setIsPlaying(prev => !prev);
+  }, [currentSong]); // Dependency: Only currentSong
 
+  // --- Effect 2: Handle play/pause state changes ---
+  useEffect(() => {
+    const audioEl = audioPlayerRef.current;
+    if (audioEl && currentSong) { // Ensure audio element and current song are available
+      if (isPlaying) {
+        audioEl.play().catch(e => console.error("Error playing audio:", e));
+      } else {
+        audioEl.pause();
+      }
+    }
+  }, [isPlaying, currentSong]); // Dependencies: isPlaying and currentSong (to ensure it's loaded)
+
+
+  // Add event listeners for timeupdate, loadedmetadata, and ended
+  useEffect(() => {
+    const audioEl = audioPlayerRef.current;
+    if (audioEl) {
+      const handleTimeUpdate = () => {
+        setCurrentTime(audioEl.currentTime);
+      };
+      const handleLoadedMetadata = () => {
+        setSongDuration(audioEl.duration);
+      };
+      const handleEnded = () => {
+        setIsPlaying(false); // Pause when song ends
+        // You might want to call playNextSong() here
+      };
+
+      audioEl.addEventListener('timeupdate', handleTimeUpdate);
+      audioEl.addEventListener('loadedmetadata', handleLoadedMetadata);
+      audioEl.addEventListener('ended', handleEnded);
+
+      return () => {
+        audioEl.removeEventListener('timeupdate', handleTimeUpdate);
+        audioEl.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        audioEl.removeEventListener('ended', handleEnded);
+      };
+    }
+  }, [setIsPlaying]); // Dependencies: setIsPlaying, as it's used in handleEnded
+
+  const togglePlayPause = () => {
+    // The actual play/pause is handled by the useEffect based on isPlaying state
+    setIsPlaying(prev => !prev);
   };
 
   // Handler for mute button
@@ -63,9 +134,16 @@ export default function Spotify() {
     const currentIndex = musicLibrary.findIndex(s => s.id === currentSong.id);
     const prevIndex = (currentIndex - 1 + musicLibrary.length) % musicLibrary.length;
     setSong(musicLibrary[prevIndex]);
-    setIsPlaying(true); 
+    setIsPlaying(true);
   };
 
+  // Helper function to format time from seconds to MM:SS
+  const formatTime = (seconds: number): string => {
+    if (isNaN(seconds) || seconds < 0) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
 
   const musicLibrary: Song[] = [
     {
@@ -74,7 +152,8 @@ export default function Spotify() {
       artist: "Atif Ashlam",
       duration: "3:22",
       albumArt: "/tuChaiye.jpg",
-      song:'/tuChaiye.mp3'
+      song: '/tuChaiye.mp3',
+      audioUrl: '/tuChaiye.mp3' // Added audioUrl
     },
     {
       id: "2",
@@ -82,7 +161,8 @@ export default function Spotify() {
       artist: "One Direction",
       duration: "4:05",
       albumArt: "/Humsafar.jpg",
-      song:'/Humsafar.mp3'
+      song: '/Humsafar.mp3',
+      audioUrl: '/Humsafar.mp3' // Added audioUrl
     },
     {
       id: "3",
@@ -90,7 +170,8 @@ export default function Spotify() {
       artist: "One Direction",
       duration: "3:49",
       albumArt: "/findingHer.jpg",
-      song:'/findingHer.mp3'
+      song: '/findingHer.mp3',
+      audioUrl: '/findingHer.mp3' // Added audioUrl
     },
     {
       id: "4",
@@ -98,7 +179,8 @@ export default function Spotify() {
       artist: "One Direction",
       duration: "3:22",
       albumArt: "/Attention.jpg",
-      song:'/Attention.mp3'
+      song: '/Attention.mp3',
+      audioUrl: '/Attention.mp3' // Added audioUrl
     },
     // {
     //   id: "5",
@@ -106,9 +188,13 @@ export default function Spotify() {
     //   artist: "One Direction",
     //   duration: "3:22",
     //   albumArt: "/ORangrez.jpg",
-    //   song:'/ORangrez.mp3'
+    //   song:'/ORangrez.mp3',
+    //   audioUrl:'/ORangrez.mp3' // Added audioUrl
     // },
   ];
+
+  // Calculate progress percentage
+  const progressPercent = songDuration > 0 ? (currentTime / songDuration) * 100 : 0;
 
 
   return (
@@ -193,7 +279,7 @@ export default function Spotify() {
         {/* Player Bar */}
         <div className="h-[12%] flex justify-between items-center bg-gray-800 px-4 py-2 border-t border-gray-700 shrink-0">
           {/* audio */}
-          <audio autoPlay src={currentSong?.song} muted={isMuted} loop={isLooping} ref={audioPlayerRef} className="hidden" />
+          <audio autoPlay src={currentSong?.song} muted={isMuted} loop={isLooping} ref={audioPlayerRef} className="hidden" id="audio"/>
 
           <div className="flex gap-4 items-center w-44 ">
             {currentSong?.albumArt && (
@@ -232,31 +318,33 @@ export default function Spotify() {
               </button>
             </div>
             <div className="flex items-center w-full max-w-xl">
-              <p className="text-gray-400 text-xs mr-2">0:19</p> {/* TODO: Make dynamic */}
+              <p className="text-gray-400 text-xs mr-2">{formatTime(currentTime)}</p> {/* Made dynamic */}
               <div className="flex-grow h-1 bg-gray-600 rounded-full relative">
                 <div
                   className="absolute left-0 top-0 h-full bg-green-500 rounded-full"
-                  style={{ width: "calc((19 / 245) * 100%)" }}
+                  style={{ width: `${progressPercent}%` }} // Made dynamic
                 ></div>
-                <div className="absolute left-[calc((19/245)*100%)] top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"></div>
+                <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"
+                     style={{ left: `${progressPercent}%` }} // Made dynamic
+                ></div>
               </div>
-              <p className="text-gray-400 text-xs ml-2">4:08</p> {/* TODO: Make dynamic */}
+              <p className="text-gray-400 text-xs ml-2">{formatTime(songDuration)}</p> {/* Made dynamic */}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <img src="/loud-speakerIcon.png" className="w-4" alt="" />
+            <img src={globalVolume > 0 ? "/loud-speakerIcon.png" : '/mute.png'} className="w-4" alt="" />
             <input
               type="range"
               min="0"
-              max="100"
+              step={0.01} // Changed step to 0.01 for finer control
+              max="1"
+              value={globalVolume}
+              onChange={(e) => setGlobalVolume(parseFloat(e.target.value))}
               className="w-24 h-1 bg-gray-600 rounded-full volume-slider"
-              // TODO: Add onChange handler for volume control
             />
           </div>
         </div>
       </div>
-      {/* This is the SINGLE, CENTRAL audio element for the entire application */}
-      
     </motion.div>
   );
 }

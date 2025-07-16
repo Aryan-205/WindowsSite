@@ -9,7 +9,6 @@ import Search from "./Search";
 import useStore from "../store/feature";
 import Wifi from "./Wifi";
 import Volume from "./Volume";
-import Battery from "./Battery";
 
 const ActiveComponentRenderer: React.FC = () => {
   const activeComponent = useStore((state)=>state.activeComponent
@@ -33,8 +32,6 @@ const ActiveComponentRenderer: React.FC = () => {
         return <Wifi />;
       case "Volume":
         return <Volume />;
-      case "Battery":
-        return <Battery />;
     }
   };
 

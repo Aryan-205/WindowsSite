@@ -15,6 +15,8 @@ interface StoreState {
   clearActiveComponent: () => void;
   currentSong: null | Song;
   setSong:(comp:Song) => void
+  globalVolume:number
+  setGlobalVolume:(v:number)=>void
 }
 
 const useStore = create<StoreState>((set) => ({
@@ -22,7 +24,9 @@ const useStore = create<StoreState>((set) => ({
   setActiveComponent: (comp) => set({ activeComponent: comp }),
   clearActiveComponent: () => set({ activeComponent: null }),
   currentSong:null,
-  setSong:(song)=>set({currentSong:song})
+  setSong:(song)=>set({currentSong:song}),
+  globalVolume:0.5,
+  setGlobalVolume:(volume)=>set({globalVolume:volume})
 }));
 
 export default useStore
