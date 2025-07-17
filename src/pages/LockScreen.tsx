@@ -24,7 +24,7 @@ export default function LockScreen() {
 
   return (
     <>
-      <motion.div className={`w-full h-screen z-10 bg-black ${bar ? 'hidden' : 'flex'} delay-1500 transition ease-out flex-col gap-4 justify-center items-center`}
+      <motion.div className={`w-full h-screen fixed z-10 bg-black ${bar ? 'hidden' : 'flex'} delay-1500 transition ease-out flex-col gap-4 justify-center items-center`}
         transition={{delay:1.5}}
       >
         <button
