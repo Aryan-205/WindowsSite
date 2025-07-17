@@ -23,7 +23,7 @@ export default function Taskbar(){
             <TabButton img='/spotifyLogo.png' comp='Spotify' width="w-8"/>
             <button className="w-8"><a href="https://github.com/Aryan-205" target="_blank"><img src="/github.png" /></a></button>
             <button className="w-8"><a href="https://x.com/BolaJi_69" target="_blank"><img src="/xLogo2.png" /></a></button>
-            <TabButton img='/Zoro.jpeg' comp='Me' width="w-10 rounded-xl border"/>
+            <TabButton img='/Zoro.jpeg' comp='Me' width="w-8 rounded-xl border"/>
           </div>
           {/* date and battery */}
           <div className="flex gap-4 justify-center items-center">
