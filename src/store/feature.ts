@@ -17,6 +17,8 @@ interface StoreState {
   setSong:(comp:Song) => void
   globalVolume:number
   setGlobalVolume:(v:number)=>void
+  wallpaper:string
+  setWallpaper:(newW:string)=>void
 }
 
 const useStore = create<StoreState>((set) => ({
@@ -26,7 +28,9 @@ const useStore = create<StoreState>((set) => ({
   currentSong:null,
   setSong:(song)=>set({currentSong:song}),
   globalVolume:0.5,
-  setGlobalVolume:(volume)=>set({globalVolume:volume})
+  setGlobalVolume:(volume)=>set({globalVolume:volume}),
+  wallpaper:'/wallpaper.webp',
+  setWallpaper:(newW)=>set({wallpaper:newW})
 }));
 
 export default useStore

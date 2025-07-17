@@ -1,7 +1,7 @@
-import { useState, PointerEvent, ChangeEvent, SyntheticEvent } from "react";
+import { useState } from "react";
 import { motion, useDragControls } from 'motion/react';
+import useStore from "../../store/feature";
 
-// Define a type for the items in the settingLogo array
 interface SettingItem {
   name: string;
   icon: string;
@@ -22,33 +22,9 @@ const settingLogo: SettingItem[] = [
   // Add other settings as needed
 ];
 
-interface AppStoreState {
-  activeComponent: string | null;
-}
-
-interface AppStoreActions {
-  clearActiveComponent: () => void;
-}
-
-// This type represents the object that the selector function receives
-type AppStore = AppStoreState & AppStoreActions;
-
-const useStore = <T,>(selector: (state: AppStore) => T): T => {
-  const [state, setState] = useState<AppStoreState>({ activeComponent: null });
-
-  const clearActiveComponent = () => setState(prevState => ({ ...prevState, activeComponent: null }));
-
-  // Combine the state and the action for the selector to access
-  const storeContext: AppStore = {
-    ...state,
-    clearActiveComponent,
-  };
-
-  return selector(storeContext);
-};
-
 export default function Settings() {
   const clearActiveComponent = useStore((state) => state.clearActiveComponent);
+
   const [fullScreen, setFullScreen] = useState<boolean>(false);
 
   const [brightness, setBrightness] = useState<number>(75);
@@ -58,34 +34,39 @@ export default function Settings() {
 
   const controls = useDragControls();
 
+  const wallpaper = useStore((state)=>state.wallpaper)
+  const setWallpaper = useStore((state)=>state.setWallpaper)
+
   // Placeholder image URLs
-  const mainWallpaper: string = "https://placehold.co/1200x600/A7F3D0/065F46?text=Main+Wallpaper";
+  const mainWallpaper: string = wallpaper;
   const gridImages: string[] = [
-    "https://placehold.co/300x200/FDE68A/92400E?text=Image+1",
-    "https://placehold.co/300x200/BFDBFE/1E40AF?text=Image+2",
-    "https://placehold.co/300x200/D1FAE5/065F46?text=Image+3",
-    "https://placehold.co/300x200/FFE4E6/BE185D?text=Image+4",
-    "https://placehold.co/300x200/E0F2F7/0C4A6E?text=Image+5",
-    "https://placehold.co/300x200/FEE2E2/991B1B?text=Image+6",
+    "/wallpaper.webp",
+    '/wallpaper2.jpg',
+    '/wallpaper3.jpg',
+    '/wallpaper4.jpg',
+    '/wallpaper5.jpg',
+    '/wallpaper6.jpg',
+    '/wallpaper7.jpg',
+    '/wallpaper8.jpg',
   ];
 
   const SystemSettingsContent = () => (
     <>
     <div>
-      <div className="mb-6">
+      <div className="pb-6">
         <h1 className="text-2xl font-semibold text-gray-800">
           System <span className="text-gray-400 font-normal">&gt;</span> Display
         </h1>
       </div>
 
       {/* Brightness & colour section */}
-      <div className="bg-white rounded-lg p-5 shadow-sm mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-white rounded-lg p-5 shadow-sm pb-6">
+        <h2 className="text-lg font-semibold text-gray-800 pb-4">
           Brightness & colour
         </h2>
 
         {/* Brightness */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between pb-4">
           <div className="flex-1 mr-4">
             <p className="text-sm font-medium text-gray-800">Brightness</p>
             <p className="text-xs text-gray-500">
@@ -97,7 +78,7 @@ export default function Settings() {
             min="0"
             max="100"
             value={brightness}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setBrightness(parseInt(e.target.value))}
+            onChange={(e) => setBrightness(parseInt(e.target.value))}
             className="w-48 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
           />
           <span className="ml-3 text-sm text-gray-600">{brightness}%</span>
@@ -215,13 +196,13 @@ export default function Settings() {
       </div>
 
       {/* Scale & layout section */}
-      <div className="bg-white rounded-lg p-5 shadow-sm mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-white rounded-lg p-5 shadow-sm pb-6">
+        <h2 className="text-lg font-semibold text-gray-800 pb-4">
           Scale & layout
         </h2>
 
         {/* Scale */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between pb-4">
           <div className="flex-1 mr-4">
             <p className="text-sm font-medium text-gray-800">Scale</p>
             <p className="text-xs text-gray-500">
@@ -268,11 +249,11 @@ export default function Settings() {
       </div>
 
       {/* Multiple displays section */}
-      <div className="bg-white rounded-lg p-5 shadow-sm mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">
+      <div className="bg-white rounded-lg p-5 shadow-sm pb-6">
+        <h2 className="text-lg font-semibold text-gray-800 pb-2">
           Multiple displays
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-500 pb-4">
           Extend your desktop or duplicate your display to multiple monitors.
         </p>
         {/* Placeholder for "Detect" button and display arrangement */}
@@ -293,7 +274,7 @@ export default function Settings() {
 
       {/* Related settings section */}
       <div className="bg-white rounded-lg p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">
+        <h2 className="text-lg font-semibold text-gray-800 pb-2">
           Related settings
         </h2>
         <ul className="list-none p-0 m-0 space-y-2 text-sm">
@@ -319,24 +300,23 @@ export default function Settings() {
   );
 
   const PersonalizeSettingsContent = () => (
-    <div className="bg-gray-100 p-6">
-      <div className="mb-6">
+    <div className="bg-gray-100 flex flex-col gap-2">
+      <div className="pb-2">
         <h1 className="text-2xl font-semibold text-gray-800">
           Personalization <span className="text-gray-400 font-normal">&gt;</span> Background
         </h1>
       </div>
 
       {/* Main Wallpaper Section */}
-      <div className="bg-white rounded-lg p-5 shadow-sm mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-white rounded-lg p-5 shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-800 pb-4">
           Choose your wallpaper
         </h2>
-        <div className="w-full h-64 overflow-hidden rounded-lg mb-4">
+        <div className="w-full h-64 overflow-hidden rounded-lg pb-4">
           <img
             src={mainWallpaper}
             alt="Main Wallpaper"
             className="w-full h-full object-cover"
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => { e.currentTarget.onerror = null; e.currentTarget.src = "https://placehold.co/1200x600/CCCCCC/333333?text=Error+Loading"; }}
           />
         </div>
         <p className="text-sm text-gray-600">
@@ -346,7 +326,7 @@ export default function Settings() {
 
       {/* Image Grid Section */}
       <div className="bg-white rounded-lg p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 pb-4">
           Recent images
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -356,7 +336,7 @@ export default function Settings() {
                 src={imgSrc}
                 alt={`Grid Image ${index + 1}`}
                 className="w-full h-32 object-cover"
-                onError={(e: SyntheticEvent<HTMLImageElement, Event>) => { e.currentTarget.onerror = null; e.currentTarget.src = "https://placehold.co/300x200/CCCCCC/333333?text=Error+Loading"; }}
+                onClick={()=>setWallpaper(imgSrc)}
               />
             </div>
           ))}
@@ -378,7 +358,7 @@ export default function Settings() {
       } ${nightLight ? 'bg-black text-white' : 'bg-white'} flex flex-col rounded-lg overflow-hidden shadow-xl`}
     >
       {/* Title Bar */}
-      <div onPointerDown={(event: PointerEvent<HTMLDivElement>) => controls.start(event)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-200 bg-gray-50">
+      <div onPointerDown={(e) => controls.start(e)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-3">
           <button className="w-4 h-4 flex items-center justify-center text-gray-600">
             <img src="https://placehold.co/16x16/CCCCCC/333333?text=<-" alt="Left Arrow" />
@@ -414,7 +394,7 @@ export default function Settings() {
           <div className="flex items-center gap-2 h-16 px-2">
             {/* User profile picture (using placeholder) */}
             <img
-              src="https://placehold.co/48x48/CCCCCC/333333?text=User"
+              src="/me.jpeg"
               className="rounded-full w-12 h-12 object-cover"
               alt="User Avatar"
             />
@@ -426,7 +406,7 @@ export default function Settings() {
             </div>
           </div>
           {/* Search input field */}
-          <div className="relative mb-2 px-2">
+          <div className="relative pb-2 px-2">
             <input
               type="text"
               className="bg-gray-100 text-gray-800 border border-gray-300 rounded-md py-1.5 pl-8 pr-3 w-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
