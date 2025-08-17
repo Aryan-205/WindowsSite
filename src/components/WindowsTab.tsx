@@ -25,45 +25,6 @@ export default function WindowsTab() {
     { name: 'Clock', icon: '/clock.png' },
   ];
 
-  const allApps = [
-    { category: 'Productivity', apps: [
-      { name: 'App 1', icon: 'bg-red-400' },
-      { name: 'App 2', icon: 'bg-green-400' },
-      { name: 'App 3', icon: 'bg-blue-400' },
-      { name: 'App 4', icon: 'bg-yellow-400' },
-    ]},
-    { category: 'Other', apps: [
-      { name: 'App 5', icon: 'bg-purple-400' },
-      { name: 'App 6', icon: 'bg-orange-400' },
-      { name: 'App 7', icon: 'bg-pink-400' },
-      { name: 'App 8', icon: 'bg-cyan-400' },
-    ]},
-    { category: 'Utilities & Tools', apps: [
-      { name: 'App 9', icon: 'bg-indigo-400' },
-      { name: 'App 10', icon: 'bg-lime-400' },
-      { name: 'App 11', icon: 'bg-rose-400' },
-      { name: 'App 12', icon: 'bg-fuchsia-400' },
-    ]},
-    { category: 'Games', apps: [
-      { name: 'Game 1', icon: 'bg-emerald-400' },
-      { name: 'Game 2', icon: 'bg-sky-400' },
-      { name: 'Game 3', icon: 'bg-violet-400' },
-      { name: 'Game 4', icon: 'bg-amber-400' },
-    ]},
-    { category: 'Information & Reading', apps: [
-      { name: 'Info App 1', icon: 'bg-gray-500' },
-      { name: 'Info App 2', icon: 'bg-zinc-500' },
-    ]},
-    { category: 'Creativity', apps: [
-      { name: 'Creative App 1', icon: 'bg-red-300' },
-      { name: 'Creative App 2', icon: 'bg-green-300' },
-    ]},
-    { category: 'Entertainment', apps: [
-      { name: 'Entertainment App 1', icon: 'bg-blue-300' },
-      { name: 'Entertainment App 2', icon: 'bg-yellow-300' },
-    ]},
-  ];
-
   return (
     <>
     <div className="absolute bottom-0 left-[28%] bg-gray-800 bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-2xl shadow-2xl p-6 w-full max-w-2xl border border-gray-700 flex flex-col max-h-[calc(100vh-80px)] overflow-y-auto scrollbar-hide">
@@ -97,21 +58,11 @@ export default function WindowsTab() {
         >
           Pinned
         </button>
-        <button
-          className={`ml-3 px-4 py-2 rounded-md text-sm font-medium ${
-            activeTab === 'All'
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-          } transition-all duration-200 ease-in-out`}
-          onClick={() => setActiveTab('All')}
-        >
-          All
-        </button>
       </div>
 
       {/* Content based on active tab */}
       {activeTab === 'Pinned' && (
-        <div className="flex-grow overflow-y-auto pr-2"> {/* flex-grow allows it to take available space, overflow-y-auto makes it scrollable */}
+        <div className="flex-grow overflow-y-auto pr-2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-200">Pinned</h2>
             <button className="text-blue-400 hover:text-blue-300 text-sm">Show all &gt;</button>
@@ -119,10 +70,8 @@ export default function WindowsTab() {
           <div className="grid grid-cols-4 gap-4">
             {pinnedApps.map((app, index) => (
               <div key={index} className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
-                {/* Placeholder for App Icon */}
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl `}>
-                  {/* You will replace this with your actual image */}
-                  <img className='w-8 h-8' src={app.icon} alt="" /> {/* Hidden for accessibility */}
+                  <img className='w-8 h-8' src={app.icon} alt="" /> 
                 </div>
                 <span className="mt-2 text-xs text-gray-300 text-center">{app.name}</span>
               </div>
@@ -131,43 +80,12 @@ export default function WindowsTab() {
         </div>
       )}
 
-      {activeTab === 'All' && (
-        <div className="flex-grow overflow-y-auto pr-2"> {/* flex-grow and overflow-y-auto for the "All" content */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-200">All apps</h2>
-            <select className="bg-gray-700 bg-opacity-70 text-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600">
-              <option>View: Category</option>
-              <option>View: Alphabetical</option>
-            </select>
-          </div>
-          <div className="space-y-6">
-            {allApps.map((category, catIndex) => (
-              <div key={catIndex}>
-                <h3 className="text-md font-medium text-gray-200 mb-3">{category.category}</h3>
-                <div className="grid grid-cols-4 gap-4">
-                  {category.apps.map((app, appIndex) => (
-                    <div key={appIndex} className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
-                      {/* Placeholder for App Icon */}
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl ${app.icon}`}>
-                        {/* You will replace this with your actual image */}
-                        <span className="opacity-0">{app.name.charAt(0)}</span> {/* Hidden for accessibility */}
-                      </div>
-                      <span className="mt-2 text-xs text-gray-300 text-center">{app.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* User Profile and Power Buttons */}
-      <div className="mt-6 pt-4 border-t border-gray-700 flex justify-between items-center flex-shrink-0"> {/* flex-shrink-0 */}
+      <div className="mt-6 pt-4 border-t border-gray-700 flex justify-between items-center flex-shrink-0"> 
         <div className="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
           {/* User Profile Picture Placeholder */}
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">
-            AB
+          <div className="w-8 h-8 overflow-hidden rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">
+            <img src="/Zoro.jpeg" alt="" />
           </div>
           <span className="text-gray-200 text-sm">Aryan Bola</span>
         </div>

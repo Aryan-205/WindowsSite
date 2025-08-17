@@ -6,6 +6,14 @@ export default function LockScreen() {
 
   const [hovered, setHovered] = useState(false)
   const [bar, setBar] = useState(false)
+  const [powerPage, setPowerPage] = useState(false)
+
+  function barFunction(){
+    setBar(true)
+    setTimeout(() => {
+      setPowerPage(true)
+    }, 2000);
+  }
 
   const t = new Date()
   const navigate = useNavigate()
@@ -14,14 +22,14 @@ export default function LockScreen() {
     <>
 
     {/* power button screen */}
-      <motion.div className={`w-full h-screen fixed z-10 bg-black ${bar ? 'hidden' : 'flex'} delay-1500 transition ease-out flex-col gap-4 justify-center items-center`}
+      <motion.div className={`w-full h-screen fixed z-10 bg-black ${powerPage ? 'hidden' : 'flex'} flex-col gap-4 justify-center items-center`}
         transition={{delay:1.5}}
       >
         <button
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           className="rounded-full p-2 border hover:bg-white"
-          onClick={()=>setBar(true)}
+          onClick={barFunction}
         >
           <img
             src={hovered ? "/powerBlack.png" : "/powerIcon.png"}
@@ -30,10 +38,10 @@ export default function LockScreen() {
           />
         </button>
         {bar && (
-          <div className="bg-gray-500 h-2 w-[20%] rounded-lg overflow-hidden mt-4">
+          <div className="h-2 w-[20%] rounded-lg overflow-hidden mt-4">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: "100%" }}
+              animate={{ width: "100%",backgroundColor:"gray" }}
               transition={{ duration: 1.5 }}
               className="bg-white h-full"
             />
