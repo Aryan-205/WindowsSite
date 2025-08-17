@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import useStore from "../store/feature";
 
@@ -8,12 +9,14 @@ interface iToggleSwitch  {
 }
 
 const ToggleSwitch = ({ isOn, handleToggle, label }: iToggleSwitch) => {
+  const nightLight = useStore((state: any) => state.nightLight);
+
   return (
     <div className="flex items-center justify-between p-2">
-      <span className="text-sm text-white">{label}</span>
+      <span className={`text-sm ${nightLight ? "text-white" : "text-gray-900"}`}>{label}</span>
       <div
         className={`w-10 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-200 ease-in-out ${
-          isOn ? "bg-blue-500" : "bg-gray-600"
+          isOn ? "bg-blue-500" : nightLight ? "bg-gray-600" : "bg-gray-400"
         }`}
         onClick={handleToggle}
       >
@@ -32,6 +35,7 @@ interface iSignalStrengthIcon {
 }
 
 const SignalStrengthIcon = ({ strength }: iSignalStrengthIcon) => {
+  const nightLight = useStore((state: any) => state.nightLight);
 
   const getBars = (s: number) => {
     if (s >= 80) return 4;
@@ -48,8 +52,8 @@ const SignalStrengthIcon = ({ strength }: iSignalStrengthIcon) => {
       {[1, 2, 3, 4].map((bar) => (
         <div
           key={bar}
-          className={`absolute bottom-0 bg-gray-400 rounded-t-sm ${
-            bars >= bar ? "bg-white" : "bg-gray-600"
+          className={`absolute bottom-0 rounded-t-sm ${
+            bars >= bar ? (nightLight ? "bg-white" : "bg-blue-600") : (nightLight ? "bg-gray-600" : "bg-gray-400")
           }`}
           style={{
             left: `${(bar - 1) * 25}%`,
@@ -71,8 +75,8 @@ interface iNetwork {
 }
 
 export default function Wifi() {
-
-  const clearActiveComponent = useStore((state: any) => state.clearActiveComponent); // Added type for state
+  const clearActiveComponent = useStore((state: any) => state.clearActiveComponent);
+  const nightLight = useStore((state: any) => state.nightLight);
 
   const [wifiEnabled, setWifiEnabled] = useState<boolean>(true);
   const [availableNetworks, setAvailableNetworks] = useState<iNetwork[]>([]);
@@ -82,7 +86,7 @@ export default function Wifi() {
   const [password, setPassword] = useState<string>("");
   const [selectedNetworkToConnect, setSelectedNetworkToConnect] = useState<iNetwork | null>(null);
 
-  const simulateNetworks = (): iNetwork[] => { 
+  const simulateNetworks = (): iNetwork[] => {
     return [
       { ssid: "Home_Fiber_5G", strength: 90, security: "WPA2", isHidden: false },
       { ssid: "Guest_Network", strength: 65, security: "Open", isHidden: false },
@@ -90,7 +94,7 @@ export default function Wifi() {
       { ssid: "Secure_Office", strength: 85, security: "WPA2-Enterprise", isHidden: false },
       { ssid: "Public_Hotspot", strength: 30, security: "Open", isHidden: false },
       { ssid: "My_Hidden_AP", strength: 70, security: "WPA2", isHidden: true },
-    ].sort((a, b) => b.strength - a.strength); 
+    ].sort((a, b) => b.strength - a.strength);
   };
 
   useEffect(() => {
@@ -100,38 +104,30 @@ export default function Wifi() {
       setAvailableNetworks([]);
       setConnectedNetwork(null);
     }
-  }, [wifiEnabled, connectedNetwork, availableNetworks.length]); 
+  }, [wifiEnabled, connectedNetwork, availableNetworks.length]);
 
   const handleToggleWifi = () => {
     setWifiEnabled((prev) => !prev);
-
     if (wifiEnabled) {
       setConnectedNetwork(null);
       setIsConnecting(false);
     }
   };
 
-  const handleConnect = (network: iNetwork) => { 
+  const handleConnect = (network: iNetwork) => {
     if (connectedNetwork === network.ssid) {
-      // Already connected
       return;
     }
-
     if (network.security !== "Open" && !showPasswordInput) {
       setSelectedNetworkToConnect(network);
       setShowPasswordInput(true);
-      setPassword(""); // Clear previous password
+      setPassword("");
       return;
     }
-
     setIsConnecting(true);
-    setConnectedNetwork(null); // Clear current connection display while connecting
-
-    // Simulate connection delay
+    setConnectedNetwork(null);
     setTimeout(() => {
-      // In a real app, you'd validate password here
-      if (network.security !== "Open" && password !== "password123") { // Simple password check
-        // Replaced alert with a console log or a custom modal for better UX in an iframe
+      if (network.security !== "Open" && password !== "password123") {
         console.error("Incorrect password!");
         setIsConnecting(false);
         setShowPasswordInput(false);
@@ -139,13 +135,11 @@ export default function Wifi() {
         setSelectedNetworkToConnect(null);
         return;
       }
-
       setConnectedNetwork(network.ssid);
       setIsConnecting(false);
       setShowPasswordInput(false);
       setPassword("");
       setSelectedNetworkToConnect(null);
-
       setAvailableNetworks((prevNetworks) =>
         prevNetworks.map((n) =>
           n.ssid === network.ssid
@@ -153,7 +147,7 @@ export default function Wifi() {
             : { ...n, isConnected: false }
         )
       );
-    }, 800); //connection delay
+    }, 800);
   };
 
   const handleDisconnect = () => {
@@ -164,127 +158,126 @@ export default function Wifi() {
     );
   };
 
-
   return (
     <>
-    <div className="w-80 absolute bottom-0 right-8 bg-gray-800 rounded-lg shadow-xl text-white overflow-hidden font-sans">
-      {/* Header */}
-      <div className="bg-gray-700 px-4 py-3 flex justify-between items-center border-b border-gray-600">
-        <h3 className="text-lg font-semibold">Wi-Fi</h3>
-      </div>
+      <div className={`w-80 absolute bottom-0 right-8 rounded-lg shadow-xl overflow-hidden font-sans ${nightLight ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+        {/* Header */}
+        <div className={`px-4 py-3 flex justify-between items-center border-b ${nightLight ? "bg-gray-700 border-gray-600" : "bg-gray-100 border-gray-200"}`}>
+          <h3 className="text-lg font-semibold">Wi-Fi</h3>
+        </div>
 
-      {/* Wi-Fi Toggle */}
-      <div className="p-3 border-b border-gray-600">
-        <ToggleSwitch
-          isOn={wifiEnabled}
-          handleToggle={handleToggleWifi}
-          label="Wi-Fi"
-        />
-      </div>
+        {/* Wi-Fi Toggle */}
+        <div className={`p-3 border-b ${nightLight ? "border-gray-600" : "border-gray-200"}`}>
+          <ToggleSwitch
+            isOn={wifiEnabled}
+            handleToggle={handleToggleWifi}
+            label="Wi-Fi"
+          />
+        </div>
 
-      {/* Connection Status / Available Networks */}
-      <div className="p-3">
-        {wifiEnabled ? (
-          <>
-            {isConnecting ? (
-              <div className="text-center text-gray-400 py-4">
-                Connecting...
-                <div className="animate-pulse text-xl">...</div>
-              </div>
-            ) : connectedNetwork ? (
-              <div className="mb-4">
-                <p className="text-gray-400 text-sm mb-1">Connected to:</p>
-                <div className="flex items-center gap-2 text-blue-400 font-medium">
-                  <SignalStrengthIcon strength={90} /> 
-                  <span>{connectedNetwork}</span>
+        {/* Connection Status / Available Networks */}
+        <div className="p-3">
+          {wifiEnabled ? (
+            <>
+              {isConnecting ? (
+                <div className={`text-center py-4 ${nightLight ? "text-gray-400" : "text-gray-500"}`}>
+                  Connecting...
+                  <div className="animate-pulse text-xl">...</div>
                 </div>
-                <button
-                  onClick={handleDisconnect}
-                  className="mt-2 px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md transition-colors"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <p className="text-gray-400 text-sm mb-2">Available networks:</p>
-            )}
-
-            {/* Password Input for Secure Networks */}
-            {showPasswordInput && selectedNetworkToConnect && (
-              <div className="mb-4 p-3 bg-gray-700 rounded-md">
-                <p className="text-sm mb-2">Enter password for {selectedNetworkToConnect.ssid}</p>
-                <input
-                  type="password"
-                  className="w-full px-2 py-1 bg-gray-900 text-white text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <div className="flex justify-end gap-2 mt-3">
+              ) : connectedNetwork ? (
+                <div className="mb-4">
+                  <p className={`text-sm mb-1 ${nightLight ? "text-gray-400" : "text-gray-500"}`}>Connected to:</p>
+                  <div className={`flex items-center gap-2 font-medium ${nightLight ? "text-blue-400" : "text-blue-600"}`}>
+                    <SignalStrengthIcon strength={90} />
+                    <span>{connectedNetwork}</span>
+                  </div>
                   <button
-                    onClick={() => { setShowPasswordInput(false); setPassword(""); setSelectedNetworkToConnect(null); }}
-                    className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded-md transition-colors"
+                    onClick={handleDisconnect}
+                    className="mt-2 px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md transition-colors"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleConnect(selectedNetworkToConnect)}
-                    className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
-                    disabled={isConnecting || password.length === 0}
-                  >
-                    Connect
+                    Disconnect
                   </button>
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className={`text-sm mb-2 ${nightLight ? "text-gray-400" : "text-gray-500"}`}>Available networks:</p>
+              )}
 
-            {/* List of Networks */}
-            <div className="max-h-60 overflow-y-auto custom-scrollbar">
-              {availableNetworks.length > 0 ? (
-                availableNetworks.map((network) => (
-                  <div
-                    key={network.ssid}
-                    className={`flex items-center justify-between p-2 rounded-md cursor-pointer mb-1 ${
-                      connectedNetwork === network.ssid
-                        ? "bg-blue-800"
-                        : "hover:bg-gray-700"
-                    }`}
-                    onClick={() => !isConnecting && handleConnect(network)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <SignalStrengthIcon strength={network.strength} />
-                      <span className="text-sm">{network.ssid}</span>
-                      {network.security !== "Open" && (
-                        <span className="text-gray-400 text-xs ml-1 flex items-center">
-                          <img src="/padlock.png" className="w-4 object-contain" alt="" />
-                        </span>
+              {/* Password Input for Secure Networks */}
+              {showPasswordInput && selectedNetworkToConnect && (
+                <div className={`mb-4 p-3 rounded-md ${nightLight ? "bg-gray-700" : "bg-gray-100"}`}>
+                  <p className={`text-sm mb-2 ${nightLight ? "text-white" : "text-gray-900"}`}>Enter password for {selectedNetworkToConnect.ssid}</p>
+                  <input
+                    type="password"
+                    className={`w-full px-2 py-1 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${nightLight ? "bg-gray-900 text-white" : "bg-white text-gray-900 border border-gray-300"}`}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div className="flex justify-end gap-2 mt-3">
+                    <button
+                      onClick={() => { setShowPasswordInput(false); setPassword(""); setSelectedNetworkToConnect(null); }}
+                      className={`px-3 py-1 text-white text-sm rounded-md transition-colors ${nightLight ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-400 hover:bg-gray-500"}`}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleConnect(selectedNetworkToConnect)}
+                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+                      disabled={isConnecting || password.length === 0}
+                    >
+                      Connect
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* List of Networks */}
+              <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                {availableNetworks.length > 0 ? (
+                  availableNetworks.map((network) => (
+                    <div
+                      key={network.ssid}
+                      className={`flex items-center justify-between p-2 rounded-md cursor-pointer mb-1 ${
+                        connectedNetwork === network.ssid
+                          ? (nightLight ? "bg-blue-800" : "bg-blue-100")
+                          : (nightLight ? "hover:bg-gray-700" : "hover:bg-gray-100")
+                      }`}
+                      onClick={() => !isConnecting && handleConnect(network)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <SignalStrengthIcon strength={network.strength} />
+                        <span className={`text-sm ${nightLight ? "text-white" : "text-gray-900"}`}>{network.ssid}</span>
+                        {network.security !== "Open" && (
+                          <span className={`text-xs ml-1 flex items-center ${nightLight ? "text-gray-400" : "text-gray-500"}`}>
+                            <img src={nightLight ? "/lightLock.png" : "/darkLock.png" } className="w-4 object-contain" alt="" />
+                          </span>
+                        )}
+                      </div>
+                      {connectedNetwork === network.ssid && (
+                        <span className={`text-xs ${nightLight ? "text-blue-300" : "text-blue-600"}`}>Connected</span>
                       )}
                     </div>
-                    {connectedNetwork === network.ssid && (
-                      <span className="text-blue-300 text-xs">Connected</span>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-400 text-center py-4">
-                  {isConnecting ? "Scanning..." : "No networks found."}
-                </p>
-              )}
-            </div>
-          </>
-        ) : (
-          <p className="text-gray-400 text-center py-4">Wi-Fi is turned off.</p>
-        )}
-      </div>
+                  ))
+                ) : (
+                  <p className={`text-center py-4 ${nightLight ? "text-gray-400" : "text-gray-500"}`}>
+                    {isConnecting ? "Scanning..." : "No networks found."}
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <p className={`text-center py-4 ${nightLight ? "text-gray-400" : "text-gray-500"}`}>Wi-Fi is turned off.</p>
+          )}
+        </div>
 
-      {/* Footer (Optional, for additional settings) */}
-      <div className="px-4 py-2 border-t border-gray-600 text-right">
-        <button className="text-blue-400 hover:text-blue-300 text-xs">
-          Network & Internet settings
-        </button>
+        {/* Footer (Optional, for additional settings) */}
+        <div className={`px-4 py-2 border-t ${nightLight ? "border-gray-600" : "border-gray-200"} text-right`}>
+          <button className={`text-xs ${nightLight ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-500"}`}>
+            Network & Internet settings
+          </button>
+        </div>
       </div>
-    </div>
-    <div className="w-full h-full" onClick={clearActiveComponent}/>
+      <div className="w-full h-full" onClick={clearActiveComponent}/>
     </>
   );
 }
