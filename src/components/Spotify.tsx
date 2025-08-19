@@ -8,15 +8,17 @@ interface Song {
   title: string;
   artist: string;
   duration: string;
-  song: string; // Path/URL to the audio file
+  song: string; 
   albumArt?: string;
-  audioUrl: string; // Added this property to the interface
+  audioUrl: string; 
 }
 
 export default function Spotify() {
   const clearActiveComponent = useStore((state) => state.clearActiveComponent);
   const currentSong = useStore((state) => state.currentSong);
   const setSong = useStore((state) => state.setSong);
+
+  const nightLight = useStore(set=>set.nightLight)
 
   const [fullScreen, setFullScreen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -34,45 +36,41 @@ export default function Spotify() {
   const globalVolume = useStore((state) => state.globalVolume);
   const setGlobalVolume = useStore((state) => state.setGlobalVolume);
 
-  // This block runs on every render. While it works, it's generally better
-  // to put DOM manipulations inside a useEffect. However, as per your request
-  // to not change logic, it remains here.
   if (audioPlayerRef.current) {
     audioPlayerRef.current.volume = globalVolume;
-    audioPlayerRef.current.muted = isMuted; // Synchronize muted state
-    audioPlayerRef.current.loop = isLooping; // Synchronize loop state
+    audioPlayerRef.current.muted = isMuted; 
+    audioPlayerRef.current.loop = isLooping;
   }
 
-  // --- Effect 1: Handle song source changes and load ---
+  // Handle song source changes and load ---
   useEffect(() => {
     const audioEl = audioPlayerRef.current;
     if (audioEl && currentSong) {
-      // Only update source and load if the song has actually changed
       if (audioEl.src !== currentSong.song) {
         audioEl.src = currentSong.song;
-        audioEl.load(); // Load the new audio
-        setCurrentTime(0); // Reset current time when new song loads
-        setSongDuration(0); // Reset duration, will be updated by 'loadedmetadata'
+        audioEl.load(); 
+        setCurrentTime(0); 
+        setSongDuration(0);
       }
     } else if (audioEl && !currentSong) {
       audioEl.pause();
-      audioEl.src = ''; // Clear source if no song
+      audioEl.src = ''; 
       setCurrentTime(0);
       setSongDuration(0);
     }
-  }, [currentSong]); // Dependency: Only currentSong
+  }, [currentSong]); 
 
-  // --- Effect 2: Handle play/pause state changes ---
+  // Handle play/pause state changes ---
   useEffect(() => {
     const audioEl = audioPlayerRef.current;
-    if (audioEl && currentSong) { // Ensure audio element and current song are available
+    if (audioEl && currentSong) { 
       if (isPlaying) {
         audioEl.play().catch(e => console.error("Error playing audio:", e));
       } else {
         audioEl.pause();
       }
     }
-  }, [isPlaying, currentSong]); // Dependencies: isPlaying and currentSong (to ensure it's loaded)
+  }, [isPlaying, currentSong]); 
 
 
   // Add event listeners for timeupdate, loadedmetadata, and ended
@@ -86,8 +84,7 @@ export default function Spotify() {
         setSongDuration(audioEl.duration);
       };
       const handleEnded = () => {
-        setIsPlaying(false); // Pause when song ends
-        // You might want to call playNextSong() here
+        setIsPlaying(false);
       };
 
       audioEl.addEventListener('timeupdate', handleTimeUpdate);
@@ -100,10 +97,9 @@ export default function Spotify() {
         audioEl.removeEventListener('ended', handleEnded);
       };
     }
-  }, [setIsPlaying]); // Dependencies: setIsPlaying, as it's used in handleEnded
+  }, [setIsPlaying]); 
 
   const togglePlayPause = () => {
-    // The actual play/pause is handled by the useEffect based on isPlaying state
     setIsPlaying(prev => !prev);
   };
 
@@ -124,7 +120,7 @@ export default function Spotify() {
     const currentIndex = musicLibrary.findIndex(s => s.id === currentSong.id);
     const nextIndex = (currentIndex + 1) % musicLibrary.length;
     setSong(musicLibrary[nextIndex]);
-    setIsPlaying(true); // Ensure it plays when switching to next song
+    setIsPlaying(true); 
   };
 
   // Placeholder for Previous song logic
@@ -212,25 +208,25 @@ export default function Spotify() {
       <div onPointerDown={event => controls.start(event)} className="h-[5%] flex items-center justify-between px-4 shrink-0 border-b border-gray-700 bg-gray-500">
         <div className="flex items-center gap-3">
           <button className="w-4 h-4 flex items-center justify-center text-gray-400">
-            <img src="/leftArrow.png" alt="Back" className="w-full h-full" />
+            <img src={nightLight ? "lightleftArrow.png" : "/darkleftArrow.png"} alt="Back" className="w-full h-full" />
           </button>
           <p className="text-sm font-medium text-gray-300">Spotify</p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={clearActiveComponent} className="w-4 h-4">
-            <img src="/minus.png" alt="Minimize" className="w-full h-full" />
+            <img src={nightLight ? "lightminimize.png" : "/darkminimize.png"} alt="Minimize" className="w-3 h-3" />
           </button>
           <button
             onClick={() => setFullScreen((prev) => !prev)}
             className="w-3 h-3"
           >
-            <img src="/square.png" alt="Maximize" className="w-full h-full" />
+            <img src={nightLight ? "lightsquare.png" : "/darksquare.png"} alt="Maximize" className="w-full h-full" />
           </button>
           <button
             onClick={clearActiveComponent}
             className="w-4 h-4 hover:bg-red-500 rounded-full flex items-center justify-center"
           >
-            <img src="/close.png" alt="Close" className="w-full h-full" />
+            <img src={nightLight ? "lightclose.png" : "/darkclose.png"} alt="Close" className="w-full h-full" />
           </button>
         </div>
       </div>
@@ -318,14 +314,14 @@ export default function Spotify() {
               </button>
             </div>
             <div className="flex items-center w-full max-w-xl">
-              <p className="text-gray-400 text-xs mr-2">{formatTime(currentTime)}</p> {/* Made dynamic */}
+              <p className="text-gray-400 text-xs mr-2">{formatTime(currentTime)}</p> 
               <div className="flex-grow h-1 bg-gray-600 rounded-full relative">
                 <div
                   className="absolute left-0 top-0 h-full bg-green-500 rounded-full"
-                  style={{ width: `${progressPercent}%` }} // Made dynamic
+                  style={{ width: `${progressPercent}%` }} 
                 ></div>
                 <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"
-                     style={{ left: `${progressPercent}%` }} // Made dynamic
+                      style={{ left: `${progressPercent}%` }} 
                 ></div>
               </div>
               <p className="text-gray-400 text-xs ml-2">{formatTime(songDuration)}</p> {/* Made dynamic */}
@@ -336,7 +332,7 @@ export default function Spotify() {
             <input
               type="range"
               min="0"
-              step={0.01} // Changed step to 0.01 for finer control
+              step={0.01}
               max="1"
               value={globalVolume}
               onChange={(e) => setGlobalVolume(parseFloat(e.target.value))}

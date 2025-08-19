@@ -475,7 +475,7 @@ export default function Settings() {
           ))}
         </div>
 
-        {/* Right Content - Conditional Rendering */}
+        {/* Conditional Rendering */}
         <div className={`flex-1 overflow-y-auto p-6 ${nightLight ? "bg-gray-900" : "bg-gray-100"}`}>
           {activeSetting === "System" && <SystemSettingsContent />}
           {activeSetting === "Personalize" && <PersonalizeSettingsContent />}
