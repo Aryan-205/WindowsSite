@@ -5,7 +5,7 @@ export default function Taskbar(){
   const t = new Date()
   return (
     <>
-      <div className="w-full h-12 px-2 border bg-blue-950 flex justify-between items-center">
+      <div className="w-full h-12 px-2 border-t bg-blue-950 flex justify-between items-center">
           {/* left widgets */}
           <div className="flex justify-center items-center gap-4">
             <img src="/weather.png" alt="" className="w-8 h-8 object-contain" />
