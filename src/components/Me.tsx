@@ -1,46 +1,75 @@
 import { motion } from 'motion/react'
 import React, { useState } from 'react';
 import { CodeIcon, DatabaseIcon, ServerIcon, DesignIcon } from './SkillOrb';
+import useStore from '../store/feature';
 
 export default function Me() {
 
-  const clearActiveComponent = () => {
-    console.log("clearActiveComponent called.");
-  };
+  const clearActiveComponent = useStore(set=>set.clearActiveComponent)
 
   const [activeSection, setActiveSection] = useState('home');
 
   const skills = [
-    { name: 'Web Development', icon: CodeIcon, color: 'bg-emerald-500',subskills: ['React', 'Next.js', 'Tailwind CSS', 'JavaScript', 'HTML', 'CSS', 'Express', 'NodeJs', 'WebSocket'] },
+    { name: 'Web Development', icon: CodeIcon, color: 'bg-emerald-500',subskills: ['React', 'Next.js', 'Tailwind CSS', 'JavaScript','Typescript', 'HTML', 'CSS', 'Express', 'NodeJs', 'WebSocket'] },
     { name: 'UI/UX Design', icon: DesignIcon, color: 'bg-amber-500',  subskills: ['Figma', 'Motion', 'GSAP', 'ThreeJS', 'Canvas', 'Blender', 'Prototyping'] },
-    { name: 'Database Management', icon: DatabaseIcon, color: 'bg-rose-500', subskills: ['MongoDB', 'PostgreSQL', "Prisma",'SQL', 'Firebase']  },
-    { name: 'DevOps', icon: ServerIcon, color: 'bg-cyan-500', subskills: ['Git', 'Docker', 'TurboRepo','AWS'] },
+    { name: 'Database Management', icon: DatabaseIcon, color: 'bg-rose-500', subskills: ['MongoDB', 'PostgreSQL', "Prisma",'SQL', 'Firebase','Zod', 'Zustand','Redux']  },
+    { name: 'DevOps', icon: ServerIcon, color: 'bg-cyan-500', subskills: ['Git/Github', 'Docker', 'TurboRepo','AWS','C++', 'Python-basics'] },
   ];
 
   const projects = [
     {
-      title: 'Project Alpha',
+      title: 'Apple Bento Grid',
       description: 'A responsive web application built with React and Tailwind CSS.',
       image: '/AppleBentoGrid.jpeg',
-      link: '#',
+      githubUrl: "https://github.com/Aryan-205/WindowsSite",
+      liveUrl: "https://windows-site-gq1x.vercel.app/",
     },
     {
-      title: 'Design Beta',
+      title: 'Windows OS',
+      subheading:"A Windows OS inside your browser",
       description: 'A mobile app UI/UX design prototype created using Figma.',
       image: '/WindowsClone.png',
-      link: '#',
+      githubUrl: "https://github.com/Aryan-205/WindowsSite",
+      liveUrl: "https://windows-site-gq1x.vercel.app/",
     },
     {
-      title: 'Project Gamma',
+      title: 'ExcaliDraw',
+      subheading:"A Windows OS inside your browser",
       description: 'An e-commerce platform with a Node.js backend and MongoDB.',
       image: '/ExcaliDraw.jpg',
-      link: '#',
+      githubUrl: "https://github.com/Aryan-205/WindowsSite",
+      liveUrl: "https://windows-site-gq1x.vercel.app/",
     },
     {
-      title: 'Website Delta',
-      description: 'A personal blog site built with Next.js and a headless CMS.',
-      image: 'https://placehold.co/600x400/1e293b/d1d5db?text=Website+Delta',
-      link: '#',
+      title: 'Rento',
+      subheading: "A Luxury Car Rental Platform",
+      description: 'A modern rental platform with clean ui and booking capabilities.',
+      image: '/Rento.png',
+      link: 'https://rento-beta.vercel.app/',
+      githubUrl: "https://github.com/Aryan-205/Rento",
+    },
+  ];
+
+  const designs = [
+    {
+      image: "/rotating.png",
+      title: "Planetary Orbits",
+      description: "planets spinning in a orbit, made using keyframes in css",
+    },
+    {
+      image: "/Figma.png",
+      title: "My Designs",
+      description: "A few Designs from my Figma file",
+    },
+    {
+      image: "/3DButton.png",
+      title: "3D-Button",
+      description: "3D Button made with motion/react and tailwindcss",
+    },
+    {
+      image: "/MyDesign.png",
+      title: "Landing Page",
+      description: "An stunning landing page",
     },
   ];
 
@@ -71,7 +100,7 @@ export default function Me() {
   return (
     <>
       <div
-        className="z-10 w-[80%] h-[80%] flex flex-col rounded-lg shadow-xl bg-slate-950 text-slate-300 font-inter overflow-y-auto absolute [box-shadow:inset_0px_0px_200px_1px_rgba(0,0,115,0.2)]"
+        className="z-10 w-[80%] h-[80%] flex flex-col rounded-lg shadow-xl bg-black text-slate-300 font-inter overflow-y-auto absolute [box-shadow:inset_0px_0px_200px_1px_rgba(0,0,115,0.2)]"
       >
         <AnimatedBackground/>
         {/* Navigation Bar */}
@@ -108,7 +137,7 @@ export default function Me() {
               <button
                 onClick={() => scrollToSection('designs')}
                 className={`p-3 rounded-lg transition-colors duration-300 ${
-                  activeSection === 'projects' ? 'bg-gradient-to-br from-amber-500 to-amber-900 text-white' : 'hover:bg-slate-800'
+                  activeSection === 'designs' ? 'bg-gradient-to-br from-amber-500 to-amber-900 text-white' : 'hover:bg-slate-800'
                 }`}
                 aria-label="Designs"
               >
@@ -137,9 +166,23 @@ export default function Me() {
             <h1 className="text-4xl sm:text-6xl font-bold text-white mb-4 animate-fade-in-up">
               Hello, I'm <span className=" bg-gradient-to-br from-amber-500 to-amber-900 text-transparent bg-clip-text">Aryan Bola</span>
             </h1>
-            <p className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl animate-fade-in-up delay-200">
-              A passionate developer and designer creating beautiful, simple, and intuitive digital experiences.
-            </p>
+            <div className='pb-8 flex gap-4'>
+              <p className="text-lg sm:text-xl text-gray-300  max-w-2xl animate-fade-in-up delay-200">
+                Web Developer
+              </p>
+              <p className="text-lg sm:text-xl text-gray-300  max-w-2xl animate-fade-in-up delay-200">
+                |
+              </p>
+              <p className="text-lg sm:text-xl text-gray-300  max-w-2xl animate-fade-in-up delay-200">
+                UI/UX Designer
+              </p>
+              <p className="text-lg sm:text-xl text-gray-300  max-w-2xl animate-fade-in-up delay-200">
+                |
+              </p>
+              <p className="text-lg sm:text-xl text-gray-300  max-w-2xl animate-fade-in-up delay-200">
+                Cracked Dev
+              </p>
+            </div>
             <div className="flex space-x-4 animate-fade-in-up delay-400">
               <a
                 href="#projects"
@@ -183,7 +226,7 @@ export default function Me() {
                     <div className={`p-4 rounded-lg mb-4  ${skill.color} shadow-lg`}>
                       <skill.icon /> 
                     </div>
-                    <h3 className="text-xl font-semibold">{skill.name}</h3>
+                    <h3 className="text-xl font-semibold text-white">{skill.name}</h3>
                   </motion.div>
 
                   {/* second child */}
@@ -256,7 +299,7 @@ export default function Me() {
               My Designs
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {projects.map((project, index) => (
+              {designs.map((project, index) => (
                 <div
                   key={index}
                   className="bg-slate-800/50 backdrop-blur-sm rounded-lg overflow-hidden border border-white shadow-lg transition-transform duration-300 hover:scale-[1.02]"
@@ -275,14 +318,6 @@ export default function Me() {
                   <div className="p-6">
                     <h3 className="text-2xl font-bold text-white mb-2">{project.title}</h3>
                     <p className="text-slate-400 mb-4">{project.description}</p>
-                    <a
-                      href={project.link}
-                      className="inline-flex items-center text-amber-400 hover:text-amber-300 font-semibold transition-colors duration-300"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Project 
-                    </a>
                   </div>
                 </div>
               ))}
@@ -297,6 +332,9 @@ export default function Me() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
               Get in Touch
             </h2>
+            <p className="text-lg sm:text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+              Hello! I'm Aryan Bola, a passionate 20-year-old developer and 2nd-year DU student. I'm driven by curiosity and the desire to learn from every interaction, no matter how small.
+            </p>
             <p className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
               I'm always open to new opportunities and collaborations. Feel free to reach out!
             </p>
@@ -311,13 +349,13 @@ export default function Me() {
                 <img className='w-8 h-8' src="/github.png" alt="" />
               </a>
               <a
-                href="https://linkedin.com/in/aryan-bola-a95913316"
+                href="https://x.com/BolaJi_69"
                 className="text-slate-400 hover:text-white transition-colors duration-300"
-                aria-label="LinkedIn"
+                aria-label="X"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img className='w-8 h-8' src="/linkedin.png" alt="" />
+                <img className='w-8 h-8' src="/twitterDark.png" alt="" />
               </a>
               <a
                 href="mailto:aaryann5002@example.com"
@@ -335,7 +373,7 @@ export default function Me() {
           <p>&copy; {new Date().getFullYear()} Aryan Bola✨.</p>
         </footer>
       </div>
-      <div className="w-full h-full" onClick={clearActiveComponent}/>
+      <div className="fixed inset-0 z-0" onClick={clearActiveComponent}/>
     </>
   );
 }
